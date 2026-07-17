@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc9ea7067258cac4e80962cfecb00f5e, type: 3}
   m_Name: GochuJang
   m_EditorClassIdentifier: 
-  itemName: Gochujang
+  itemName: "\uACE0\uCD94\uC7A5"
+  icon: {fileID: 21300000, guid: 4c3e91c19bc5585468a43050f12e3579, type: 3}
   itemType: 0
   prefab: {fileID: 8978700456068612908, guid: 9ce736270976ede40a467dba2a47e0ec, type: 3}

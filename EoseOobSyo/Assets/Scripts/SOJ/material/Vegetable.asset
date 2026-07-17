@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc9ea7067258cac4e80962cfecb00f5e, type: 3}
   m_Name: Vegetable
   m_EditorClassIdentifier: 
-  itemName: Vegetable
+  itemName: "\uB098\uBB3C"
+  icon: {fileID: 21300000, guid: 47c2eb76ff35ae0499a85dd2d9b1c118, type: 3}
   itemType: 0
   prefab: {fileID: 5621408931566586860, guid: c5006eeb1a41e0040abfc022270342ae, type: 3}

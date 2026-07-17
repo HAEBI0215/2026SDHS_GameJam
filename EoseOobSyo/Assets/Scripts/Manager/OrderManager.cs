@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class OrderManager : MonoBehaviour
 {
-    [Header("주문 가능한 레시피")]
-    [SerializeField]
-    private RecipeData[] availableRecipes;
-
     [Header("주문 생성")]
     [SerializeField]
     private float firstOrderDelay = 1f;
@@ -51,6 +47,23 @@ public class OrderManager : MonoBehaviour
 
     public void StartOrderSystem()
     {
+        if(ShopUnlockManager.Instance == null)
+        {
+            Debug.LogError(
+                "ShopUnlockManager가 존재하지 않습니다."
+            );
+
+            return;
+        }
+
+        // 주문 시작 직전에 해금 목록을 확실하게 다시 계산
+        ShopUnlockManager.Instance.RefreshUnlockState();
+
+        Debug.Log(
+            $"주문 시작 직전 해금 레시피 수: " +
+            $"{ShopUnlockManager.Instance.UnlockedRecipes.Count}"
+        );
+
         if(!ValidateSettings())
             return;
 
@@ -93,8 +106,13 @@ public class OrderManager : MonoBehaviour
 
             OnOrderExpired?.Invoke(order);
 
+            string recipeName =
+                order.Recipe != null
+                    ? order.Recipe.recipeName
+                    : "알 수 없는 주문";
+
             Debug.Log(
-                $"주문 시간 초과: {order.Recipe.recipeName}"
+                $"주문 시간 초과: {recipeName}"
             );
         }
     }
@@ -122,7 +140,14 @@ public class OrderManager : MonoBehaviour
         RecipeData recipe = GetRandomRecipe();
 
         if(recipe == null)
+        {
+            Debug.LogWarning(
+                "주문을 생성하지 못했습니다. " +
+                "현재 해금된 레시피를 확인하세요."
+            );
+
             return false;
+        }
 
         ActiveOrder newOrder = new ActiveOrder(
             nextOrderId,
@@ -145,35 +170,48 @@ public class OrderManager : MonoBehaviour
 
     private RecipeData GetRandomRecipe()
     {
-        if(availableRecipes == null ||
-           availableRecipes.Length == 0)
+        if(ShopUnlockManager.Instance == null)
         {
             Debug.LogError(
-                "OrderManager의 Available Recipes가 비어 있습니다."
+                "OrderManager가 ShopUnlockManager를 찾지 못했습니다."
             );
 
             return null;
         }
 
-        int randomIndex = UnityEngine.Random.Range(
-            0,
-            availableRecipes.Length
-        );
+        RecipeData recipe =
+            ShopUnlockManager.Instance
+                .GetRandomUnlockedRecipe();
 
-        return availableRecipes[randomIndex];
+        if(recipe == null)
+        {
+            Debug.LogError(
+                "현재 주문 가능한 해금 레시피가 없습니다."
+            );
+
+            return null;
+        }
+
+        return recipe;
     }
 
     public bool SubmitFood(FoodItem submittedFood)
     {
         if(!isRunning)
         {
-            Debug.Log("현재 주문 시스템이 작동 중이 아닙니다.");
+            Debug.Log(
+                "현재 주문 시스템이 작동 중이 아닙니다."
+            );
+
             return false;
         }
 
         if(submittedFood == null)
         {
-            Debug.LogWarning("제출된 음식이 없습니다.");
+            Debug.LogWarning(
+                "제출된 음식이 없습니다."
+            );
+
             return false;
         }
 
@@ -195,7 +233,8 @@ public class OrderManager : MonoBehaviour
         if(matchingOrderIndex < 0)
         {
             Debug.Log(
-                $"일치하는 주문이 없습니다: {submittedFood.ItemName}"
+                $"일치하는 주문이 없습니다: " +
+                $"{submittedFood.ItemName}"
             );
 
             return false;
@@ -213,7 +252,8 @@ public class OrderManager : MonoBehaviour
         );
 
         Debug.Log(
-            $"주문 완료: {completedOrder.Recipe.recipeName}"
+            $"주문 완료: " +
+            $"{completedOrder.Recipe.recipeName}"
         );
 
         return true;
@@ -273,25 +313,44 @@ public class OrderManager : MonoBehaviour
 
     private bool ValidateSettings()
     {
-        if(availableRecipes == null ||
-           availableRecipes.Length == 0)
+        ShopUnlockManager unlockManager =
+            ShopUnlockManager.Instance;
+
+        if(unlockManager == null)
         {
             Debug.LogError(
-                "OrderManager에 주문 가능한 RecipeData가 없습니다."
+                "씬에 ShopUnlockManager가 없습니다."
             );
 
             return false;
         }
 
-        for(int i = 0; i < availableRecipes.Length; i++)
+        IReadOnlyList<RecipeData> unlockedRecipes =
+            unlockManager.UnlockedRecipes;
+
+        Debug.Log(
+            $"ValidateSettings 검사 시 해금 레시피 수: " +
+            $"{unlockedRecipes.Count}"
+        );
+
+        if(unlockedRecipes.Count == 0)
+        {
+            Debug.LogError(
+                "현재 해금된 레시피가 없습니다."
+            );
+
+            return false;
+        }
+
+        for(int i = 0; i < unlockedRecipes.Count; i++)
         {
             RecipeData recipe =
-                availableRecipes[i];
+                unlockedRecipes[i];
 
             if(recipe == null)
             {
                 Debug.LogError(
-                    $"Available Recipes의 {i}번 항목이 비어 있습니다."
+                    $"해금 레시피 목록의 {i}번이 비어 있습니다."
                 );
 
                 return false;

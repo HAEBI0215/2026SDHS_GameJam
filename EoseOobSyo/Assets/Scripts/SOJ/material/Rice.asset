@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc9ea7067258cac4e80962cfecb00f5e, type: 3}
   m_Name: Rice
   m_EditorClassIdentifier: 
-  itemName: Rice
+  itemName: "\uBC25"
+  icon: {fileID: 21300000, guid: c09fa1634050e4d4bab6ff6d5ec6151b, type: 3}
   itemType: 0
   prefab: {fileID: 1898692863758161657, guid: c3a38dd058f2ed04eb4504c0348ffb81, type: 3}

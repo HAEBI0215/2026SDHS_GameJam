@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc9ea7067258cac4e80962cfecb00f5e, type: 3}
   m_Name: BibimBap
   m_EditorClassIdentifier: 
-  itemName: BibimBap
+  itemName: "\uBE44\uBE54\uBC25"
+  icon: {fileID: 21300000, guid: 7c8c1780c18a7854394218bcc29bb9e0, type: 3}
   itemType: 1
   prefab: {fileID: 1783618291382083236, guid: 4221acc73259ecd4f91a6679a8a1e13f, type: 3}

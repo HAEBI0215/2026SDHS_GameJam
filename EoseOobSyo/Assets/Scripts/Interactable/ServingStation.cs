@@ -1,21 +1,39 @@
 using UnityEngine;
 
-public class ServingStation : MonoBehaviour, IInteractable
+public class ServingStation :
+    MonoBehaviour,
+    IInteractable
 {
-    public void Interact(PlayerInventory inventory)
+    public void Interact(
+        PlayerInventory inventory)
     {
         if(inventory == null)
             return;
 
+        if(GameManager.Instance == null)
+        {
+            Debug.LogError(
+                "GameManager가 없습니다."
+            );
+
+            return;
+        }
+
         if(!GameManager.Instance.IsPlaying())
         {
-            Debug.Log("현재 장사 중이 아닙니다.");
+            Debug.Log(
+                "현재 장사 중이 아닙니다."
+            );
+
             return;
         }
 
         if(!inventory.HasItem())
         {
-            Debug.Log("제출할 음식이 없습니다.");
+            Debug.Log(
+                "제출할 음식이 없습니다."
+            );
+
             return;
         }
 
@@ -65,7 +83,10 @@ public class ServingStation : MonoBehaviour, IInteractable
         PlayerInventory inventory,
         FoodItem food)
     {
-        if(GameManager.Instance.Order == null)
+        OrderManager orderManager =
+            GameManager.Instance.Order;
+
+        if(orderManager == null)
         {
             Debug.LogError(
                 "OrderManager가 GameManager에 연결되지 않았습니다."
@@ -75,7 +96,7 @@ public class ServingStation : MonoBehaviour, IInteractable
         }
 
         bool success =
-            GameManager.Instance.Order.SubmitFood(
+            orderManager.SubmitFood(
                 food
             );
 
@@ -85,7 +106,9 @@ public class ServingStation : MonoBehaviour, IInteractable
                 $"{food.ItemName}과 일치하는 주문이 없습니다."
             );
 
-            // 실패 시 접시는 플레이어가 계속 들고 있음
+            GameManager.Instance.Score?.RegisterWrongSubmit();
+
+            // 실패한 접시는 삭제하지 않음
             return;
         }
 

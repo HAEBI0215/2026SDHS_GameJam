@@ -1,39 +1,98 @@
+using System;
 using UnityEngine;
 
 public class TimeManager : MonoBehaviour
 {
-    private float currentTime;
-
+    [Header("영업 제한 시간")]
     [SerializeField]
-    private float shopTime = 240f;
+    private float gameDuration = 240f;
 
-    public float CurrentTime
+    private float remainingTime;
+    private bool isRunning;
+
+    public float RemainingTime =>
+        remainingTime;
+
+    public float GameDuration =>
+        gameDuration;
+
+    public bool IsRunning =>
+        isRunning;
+
+    public float RemainingRatio
     {
-        get { return currentTime; }
+        get
+        {
+            if(gameDuration <= 0f)
+                return 0f;
+
+            return Mathf.Clamp01(
+                remainingTime / gameDuration
+            );
+        }
     }
 
-    private void Start()
-    {
-        ResetTimer();
-    }
+    public event Action<float> OnTimeChanged;
+    public event Action OnTimeEnded;
 
     private void Update()
     {
-        if(!GameManager.Instance.IsPlaying())
+        if(!isRunning)
             return;
 
-        currentTime -= Time.deltaTime;
+        remainingTime -=
+            UnityEngine.Time.deltaTime;
 
-        if(currentTime <= 0)
-        {
-            currentTime = 0;
+        remainingTime =
+            Mathf.Max(
+                0f,
+                remainingTime
+            );
 
-            GameManager.Instance.EndGame();
-        }
+        OnTimeChanged?.Invoke(
+            remainingTime
+        );
+
+        if(remainingTime > 0f)
+            return;
+
+        isRunning = false;
+
+        OnTimeEnded?.Invoke();
+
+        Debug.Log("영업 시간 종료");
     }
 
     public void ResetTimer()
     {
-        currentTime = shopTime;
+        remainingTime =
+            Mathf.Max(
+                0f,
+                gameDuration
+            );
+
+        isRunning =
+            remainingTime > 0f;
+
+        OnTimeChanged?.Invoke(
+            remainingTime
+        );
+
+        Debug.Log(
+            $"영업 타이머 시작: {gameDuration}초"
+        );
+    }
+
+    public void StopTimer()
+    {
+        isRunning = false;
+    }
+
+    public void ResumeTimer()
+    {
+        if(remainingTime <= 0f)
+            return;
+
+        isRunning = true;
     }
 }

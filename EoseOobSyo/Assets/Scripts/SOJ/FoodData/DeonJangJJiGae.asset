@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ef89558809397048bb0226db1a31cc7, type: 3}
+  m_Name: DeonJangJJiGae
+  m_EditorClassIdentifier: 
+  recipeName: "\uB41C\uC7A5\uCC0C\uAC1C"
+  ingredients:
+  - {fileID: 11400000, guid: 6a7306747450f7d418623455220112ec, type: 2}
+  - {fileID: 11400000, guid: 9cfa9b140651f1948843ddea083f0eed, type: 2}
+  cookingTime: 10
+  resultItem: {fileID: 11400000, guid: 98d81d3f9fa8cc94389069e4d09892dd, type: 2}

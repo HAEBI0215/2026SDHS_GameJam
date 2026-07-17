@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc9ea7067258cac4e80962cfecb00f5e, type: 3}
   m_Name: Jeyugbokkeum
   m_EditorClassIdentifier: 
-  itemName: Jeyugbokkeum
-  itemType: 0
+  itemName: "\uC81C\uC721\uBCF6\uC74C"
+  icon: {fileID: 21300000, guid: c4a3a2025e09fbc47b9c75788fd3eb76, type: 3}
+  itemType: 1
   prefab: {fileID: 5341919670961788503, guid: fe431087f7c5ed14fbcbabfde83310d6, type: 3}

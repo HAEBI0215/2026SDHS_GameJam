@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc9ea7067258cac4e80962cfecb00f5e, type: 3}
   m_Name: FailedFood
   m_EditorClassIdentifier: 
-  itemName: FaildFood
+  itemName: "\uC2E4\uD328\uD55C \uC74C\uC2DD"
+  icon: {fileID: 0}
   itemType: 1
   prefab: {fileID: 5695557311322096199, guid: d6c11187b3756914c912da456b263ede, type: 3}

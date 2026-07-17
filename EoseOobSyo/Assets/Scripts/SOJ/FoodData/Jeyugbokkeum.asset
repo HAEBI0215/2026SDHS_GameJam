@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ef89558809397048bb0226db1a31cc7, type: 3}
   m_Name: Jeyugbokkeum
   m_EditorClassIdentifier: 
-  recipeName: Jeyugbokkeum
+  recipeName: "\uC81C\uC721\uBCF6\uC74C"
   ingredients:
   - {fileID: 11400000, guid: 6a7306747450f7d418623455220112ec, type: 2}
   - {fileID: 11400000, guid: 5d484564992a4724b8a80646fa71d129, type: 2}

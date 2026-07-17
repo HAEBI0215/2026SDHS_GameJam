@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc9ea7067258cac4e80962cfecb00f5e, type: 3}
   m_Name: Meat
   m_EditorClassIdentifier: 
-  itemName: Meat
+  itemName: "\uACE0\uAE30"
+  icon: {fileID: 21300000, guid: f1baf2653c6662540bed0a0fc97e5ed7, type: 3}
   itemType: 0
   prefab: {fileID: 4137046522503293860, guid: d027f4f8f00228942af5bcb16b521623, type: 3}

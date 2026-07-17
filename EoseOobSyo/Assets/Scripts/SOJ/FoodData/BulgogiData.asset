@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ef89558809397048bb0226db1a31cc7, type: 3}
   m_Name: BulgogiData
   m_EditorClassIdentifier: 
-  recipeName: Bulgogi
+  recipeName: "\uBE14\uACE0\uAE30"
   ingredients:
   - {fileID: 11400000, guid: 6a7306747450f7d418623455220112ec, type: 2}
   - {fileID: 11400000, guid: ce98afe8379e604469ab066641b2cef8, type: 2}

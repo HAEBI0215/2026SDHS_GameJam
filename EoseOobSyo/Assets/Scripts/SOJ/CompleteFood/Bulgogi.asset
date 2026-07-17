@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc9ea7067258cac4e80962cfecb00f5e, type: 3}
   m_Name: Bulgogi
   m_EditorClassIdentifier: 
-  itemName: Bulgogi
-  itemType: 0
+  itemName: "\uBD88\uACE0\uAE30"
+  icon: {fileID: 21300000, guid: e99198b60ca7a084884ab8c42658f6ff, type: 3}
+  itemType: 1
   prefab: {fileID: 2773518383620159596, guid: 965b10dc953265947a8f9b2569b06bb7, type: 3}

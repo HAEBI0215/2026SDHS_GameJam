@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc9ea7067258cac4e80962cfecb00f5e, type: 3}
   m_Name: SoySource
   m_EditorClassIdentifier: 
-  itemName: SoySource
+  itemName: "\uAC04\uC7A5"
+  icon: {fileID: 0}
   itemType: 0
   prefab: {fileID: 8346688289516901447, guid: 56dd7d99ed410d6409b511c5ba187adf, type: 3}

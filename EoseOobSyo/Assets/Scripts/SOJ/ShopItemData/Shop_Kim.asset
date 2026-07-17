@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89e165aadc26f874cbbedb5fbcc20e38, type: 3}
+  m_Name: Shop_Kim
+  m_EditorClassIdentifier: 
+  itemId: Ingredient_Kim
+  displayName: "\uAE40"
+  icon: {fileID: 21300000, guid: d535908a235156144aac944a4168f2c4, type: 3}
+  description: 
+  itemType: 1
+  price: 850
+  recipe: {fileID: 0}
+  ingredient: {fileID: 11400000, guid: 96e8471ddd18e51469588fa85fe064d7, type: 2}
