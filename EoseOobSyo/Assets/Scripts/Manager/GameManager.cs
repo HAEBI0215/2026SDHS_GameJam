@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
         CurrentState = GameState.Cooking;
 
         Time?.ResetTimer();
-        Order?.StartOrder();
+        Order?.StartOrderSystem();
 
         Debug.Log("장사 시작");
     }
@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
     {
         CurrentState = GameState.Result;
 
-        Order?.StopOrder();
+        Order?.StopOrderSystem();
 
         Debug.Log("장사 종료");
     }

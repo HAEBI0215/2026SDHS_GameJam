@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(PlayerInventory))]
 public class PlayerController : MonoBehaviour
 {
     public enum PlayerType
@@ -28,6 +29,7 @@ public class PlayerController : MonoBehaviour
     private bool startsFacingRight = true;
 
     private Rigidbody2D rb;
+    private PlayerInventory inventory;
     private Animator animator;
 
     private Vector2 movement;
@@ -38,14 +40,25 @@ public class PlayerController : MonoBehaviour
     private static readonly int IsMovingHash =
         Animator.StringToHash("IsMoving");
 
+    private static readonly int IsCarryingHash =
+        Animator.StringToHash("IsCarrying");
+
     public Vector2 Movement => movement;
     public Vector2 LastDirection => lastDirection;
-    public bool IsMoving => movement.sqrMagnitude > 0.01f;
-    public bool IsFacingLeft => lastDirection.x < 0f;
+
+    public bool IsMoving =>
+        movement.sqrMagnitude > 0.01f;
+
+    public bool IsFacingLeft =>
+        lastDirection.x < 0f;
+
+    public bool IsCarrying =>
+        inventory != null && inventory.HasItem();
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        inventory = GetComponent<PlayerInventory>();
 
         if(visualRoot != null)
         {
@@ -139,7 +152,8 @@ public class PlayerController : MonoBehaviour
         if(visualRoot == null)
             return;
 
-        float currentY = visualRoot.localEulerAngles.y;
+        float currentY =
+            visualRoot.localEulerAngles.y;
 
         float newY = Mathf.MoveTowardsAngle(
             currentY,
@@ -156,14 +170,24 @@ public class PlayerController : MonoBehaviour
         if(animator == null)
             return;
 
-        animator.SetBool(IsMovingHash, IsMoving);
+        animator.SetBool(
+            IsMovingHash,
+            IsMoving
+        );
+
+        animator.SetBool(
+            IsCarryingHash,
+            IsCarrying
+        );
     }
 
     private void Move()
     {
         rb.MovePosition(
             rb.position +
-            movement * moveSpeed * Time.fixedDeltaTime
+            movement *
+            moveSpeed *
+            Time.fixedDeltaTime
         );
     }
 }
