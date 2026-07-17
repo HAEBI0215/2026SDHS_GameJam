@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6473496293367471357}
   - component: {fileID: 8394359609347394208}
-  - component: {fileID: 207464578628265338}
   - component: {fileID: 8702094176511208497}
+  - component: {fileID: -1475811816899105164}
   m_Layer: 0
   m_Name: Jeyugbokkeum
   m_TagString: Untagged
@@ -86,20 +86,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &207464578628265338
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5341919670961788503}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0bc6d4b5c7cdba40bd02193d914b210, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemData: {fileID: 11400000, guid: d30f600288c68c04f9799c636aa603a4, type: 2}
-  type: 0
 --- !u!61 &8702094176511208497
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -145,3 +131,16 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &-1475811816899105164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5341919670961788503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d66e53a814c1d544abe40cf53ddf455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemData: {fileID: 11400000, guid: d30f600288c68c04f9799c636aa603a4, type: 2}
