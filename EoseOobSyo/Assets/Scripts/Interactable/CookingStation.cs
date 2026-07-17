@@ -1,50 +1,76 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class CookingStation : MonoBehaviour, IInteractable
 {
-    [Header("가능한 레시피")]
+    [Header("가능한 레시피 목록")]
     [SerializeField]
-    private List<RecipeData> recipes;
-
+    private List<RecipeData> recipes = new List<RecipeData>();
 
     [Header("실패 음식")]
     [SerializeField]
     private ItemData failedFood;
 
-
-    [Header("완성 위치")]
+    [Header("결과 음식 생성 위치")]
     [SerializeField]
     private Transform outputPoint;
 
-
-
-    [Header("재료 입력 제한 시간")]
+    [Header("재료 입력 유예 시간")]
     [SerializeField]
     private float inputTime = 10f;
 
+    [Header("타이머 UI")]
+    [SerializeField]
+    private CookingTimerUI timerUI;
 
+    private readonly List<ItemData> ingredients = new List<ItemData>();
 
-    private List<ItemData> ingredients = new();
+    private bool isTimerRunning;
+    private float currentTime;
 
+    private GameObject currentResultObject;
 
-    private bool isInputting;
+    private void Update()
+    {
+        UpdateCookingTimer();
 
-    private float timer;
-
-
+        // 완성 음식이 플레이어에게 집혀서
+        // 조리대 위치에서 벗어난 경우 다시 조리 가능하게 처리
+        if(currentResultObject != null &&
+           currentResultObject.transform.parent != null)
+        {
+            currentResultObject = null;
+        }
+    }
 
     public void Interact(PlayerInventory inventory)
     {
-        if(!inventory.HasItem())
+        if(inventory == null)
             return;
 
+        // 완성된 음식이 아직 남아 있으면 새 재료 투입 방지
+        if(currentResultObject != null)
+        {
+            Debug.Log("완성된 음식을 먼저 가져가야 합니다.");
+            return;
+        }
 
+        if(!inventory.HasItem())
+        {
+            Debug.Log("들고 있는 아이템이 없습니다.");
+            return;
+        }
 
         ItemBase item = inventory.GetItem();
 
+        if(item == null)
+            return;
 
+        if(item.Data == null)
+        {
+            Debug.LogWarning("아이템에 ItemData가 없습니다.");
+            return;
+        }
 
         if(item.Data.itemType != ItemType.Ingredient)
         {
@@ -52,161 +78,180 @@ public class CookingStation : MonoBehaviour, IInteractable
             return;
         }
 
-
-
         AddIngredient(item.Data);
 
+        ItemBase takenItem = inventory.TakeItem();
 
-
-        inventory.TakeItem();
-
-        Destroy(item.gameObject);
-
-
-
-        // 첫 재료 투입 시 타이머 시작
-        if(!isInputting)
+        if(takenItem != null)
         {
-            StartInputTimer();
+            Destroy(takenItem.gameObject);
+        }
+
+        // 첫 재료를 넣은 순간에만 타이머 시작
+        if(!isTimerRunning)
+        {
+            StartCookingTimer();
         }
     }
 
-
-
-
-    private void AddIngredient(ItemData item)
+    private void AddIngredient(ItemData itemData)
     {
-        ingredients.Add(item);
+        ingredients.Add(itemData);
 
+        Debug.Log($"{itemData.itemName} 투입");
 
-        Debug.Log(
-            item.itemName + " 추가"
-        );
+        PrintCurrentIngredients();
     }
 
-
-
-    private void StartInputTimer()
+    private void StartCookingTimer()
     {
-        isInputting = true;
+        isTimerRunning = true;
+        currentTime = inputTime;
 
-        timer = inputTime;
+        if(timerUI != null)
+        {
+            timerUI.Show(inputTime);
+        }
 
-
-        Debug.Log(
-            "재료 입력 시작 : 10초"
-        );
+        Debug.Log($"조리 타이머 시작: {inputTime}초");
     }
 
-
-
-    private void Update()
+    private void UpdateCookingTimer()
     {
-        if(!isInputting)
+        if(!isTimerRunning)
             return;
 
+        currentTime -= Time.deltaTime;
+        currentTime = Mathf.Max(currentTime, 0f);
 
-
-        timer -= Time.deltaTime;
-
-
-
-        if(timer <= 0)
+        if(timerUI != null)
         {
-            CheckRecipe();
+            timerUI.UpdateTimer(currentTime, inputTime);
+        }
+
+        if(currentTime <= 0f)
+        {
+            FinishCooking();
         }
     }
 
-
-
-
-    private void CheckRecipe()
+    private void FinishCooking()
     {
-        isInputting = false;
+        isTimerRunning = false;
+        currentTime = 0f;
 
-
-
-        RecipeData result = FindRecipe();
-
-
-
-        if(result != null)
+        if(timerUI != null)
         {
-            Debug.Log(
-                result.recipeName + " 성공"
-            );
+            timerUI.Hide();
+        }
 
+        RecipeData matchedRecipe = FindMatchedRecipe();
 
-            SpawnFood(
-                result.resultItem
-            );
+        if(matchedRecipe != null)
+        {
+            SpawnResult(matchedRecipe.resultItem);
+
+            Debug.Log($"{matchedRecipe.recipeName} 완성!");
         }
         else
         {
-            Debug.Log(
-                "실패 음식"
-            );
+            SpawnResult(failedFood);
 
-
-            SpawnFood(
-                failedFood
-            );
+            Debug.Log("일치하는 레시피가 없어 실패 음식이 생성되었습니다.");
         }
-
-
 
         ingredients.Clear();
     }
 
-
-
-
-
-    private RecipeData FindRecipe()
+    private RecipeData FindMatchedRecipe()
     {
         foreach(RecipeData recipe in recipes)
         {
+            if(recipe == null)
+                continue;
+
             if(IsSameRecipe(recipe))
             {
                 return recipe;
             }
         }
 
-
         return null;
     }
 
-
-
-
     private bool IsSameRecipe(RecipeData recipe)
     {
-        // 재료 개수가 다르면 실패
+        if(recipe.ingredients == null)
+            return false;
+
         if(recipe.ingredients.Length != ingredients.Count)
             return false;
 
+        // 같은 재료가 여러 개 필요한 경우도 정확하게 비교하기 위해
+        // 복사 리스트에서 하나씩 제거
+        List<ItemData> remainingIngredients =
+            new List<ItemData>(ingredients);
 
-
-        foreach(ItemData need in recipe.ingredients)
+        foreach(ItemData requiredItem in recipe.ingredients)
         {
-            if(!ingredients.Contains(need))
+            if(!remainingIngredients.Remove(requiredItem))
+            {
                 return false;
+            }
         }
 
-
-
-        return true;
+        return remainingIngredients.Count == 0;
     }
 
-
-
-
-    private void SpawnFood(ItemData food)
+    private void SpawnResult(ItemData resultItem)
     {
-        Instantiate(
-            food.prefab,
+        if(resultItem == null)
+        {
+            Debug.LogError($"{name}: 결과 ItemData가 없습니다.");
+            return;
+        }
+
+        if(resultItem.prefab == null)
+        {
+            Debug.LogError(
+                $"{name}: {resultItem.itemName}의 프리팹이 없습니다."
+            );
+            return;
+        }
+
+        if(outputPoint == null)
+        {
+            Debug.LogError($"{name}: OutputPoint가 없습니다.");
+            return;
+        }
+
+        currentResultObject = Instantiate(
+            resultItem.prefab,
             outputPoint.position,
             Quaternion.identity
         );
+    }
+
+    private void PrintCurrentIngredients()
+    {
+        if(ingredients.Count == 0)
+        {
+            Debug.Log("현재 재료 없음");
+            return;
+        }
+
+        string ingredientNames = string.Empty;
+
+        for(int i = 0; i < ingredients.Count; i++)
+        {
+            ingredientNames += ingredients[i].itemName;
+
+            if(i < ingredients.Count - 1)
+            {
+                ingredientNames += ", ";
+            }
+        }
+
+        Debug.Log($"현재 재료: {ingredientNames}");
     }
 }

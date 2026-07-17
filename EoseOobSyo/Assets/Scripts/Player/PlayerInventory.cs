@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerInventory : MonoBehaviour
 {
-    [Header("아이템 위치")]
+    [Header("아이템을 들 위치")]
     [SerializeField]
     private Transform holdPoint;
 
@@ -21,28 +21,38 @@ public class PlayerInventory : MonoBehaviour
     public void PickUp(ItemBase item)
     {
         if(currentItem != null)
+        {
             return;
+        }
+
+        if(item == null)
+        {
+            return;
+        }
 
         currentItem = item;
-
-        item.PickUp(holdPoint);
+        currentItem.PickUp(holdPoint);
     }
 
     public void Drop()
     {
         if(currentItem == null)
+        {
             return;
-
+        }
 
         currentItem.Drop();
-
         currentItem = null;
     }
 
     public ItemBase TakeItem()
     {
-        ItemBase item = currentItem;
+        if(currentItem == null)
+        {
+            return null;
+        }
 
+        ItemBase item = currentItem;
         currentItem = null;
 
         return item;

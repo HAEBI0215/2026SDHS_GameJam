@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public TimeManager Time { get; private set; }
     public SoundManager Sound { get; private set; }
     public UIManager UI { get; private set; }
+    public OrderManager Order { get; private set; }
 
     public enum GameState
     {
@@ -25,7 +26,6 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-
         Instance = this;
 
         DontDestroyOnLoad(transform.root);
@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour
         Time = GetComponent<TimeManager>();
         Sound = GetComponent<SoundManager>();
         UI = GetComponent<UIManager>();
+        Order = GetComponent<OrderManager>();
 
         Debug.Log("Manager Initialize");
     }
@@ -51,7 +52,8 @@ public class GameManager : MonoBehaviour
     {
         CurrentState = GameState.Cooking;
 
-        Time.ResetTimer();
+        Time?.ResetTimer();
+        Order?.StartOrder();
 
         Debug.Log("장사 시작");
     }
@@ -59,6 +61,8 @@ public class GameManager : MonoBehaviour
     public void EndGame()
     {
         CurrentState = GameState.Result;
+
+        Order?.StopOrder();
 
         Debug.Log("장사 종료");
     }
