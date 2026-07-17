@@ -6,26 +6,58 @@ using UnityEngine.UI;
 public class DaySettlementUI : MonoBehaviour
 {
     [Header("루트")]
-    [SerializeField] private GameObject settlementRoot;
-    [SerializeField] private CanvasGroup settlementCanvasGroup;
-    [SerializeField] private RectTransform settlementWindow;
+    [SerializeField]
+    private GameObject settlementRoot;
+
+    [SerializeField]
+    private CanvasGroup settlementCanvasGroup;
+
+    [SerializeField]
+    private RectTransform settlementWindow;
 
     [Header("텍스트")]
-    [SerializeField] private TMP_Text dayText;
-    [SerializeField] private TMP_Text grossEarningsText;
-    [SerializeField] private TMP_Text expiredPenaltyText;
-    [SerializeField] private TMP_Text wrongPenaltyText;
-    [SerializeField] private TMP_Text finalEarningsText;
-    [SerializeField] private TMP_Text totalMoneyText;
+    [SerializeField]
+    private TMP_Text dayText;
+
+    [SerializeField]
+    private TMP_Text grossEarningsText;
+
+    [SerializeField]
+    private TMP_Text expiredPenaltyText;
+
+    [SerializeField]
+    private TMP_Text wrongPenaltyText;
+
+    [SerializeField]
+    private TMP_Text finalEarningsText;
+
+    [SerializeField]
+    private TMP_Text totalMoneyText;
 
     [Header("다음")]
-    [SerializeField] private Button openShopButton;
-    [SerializeField] private ShopUI shopUI;
+    [SerializeField]
+    private Button openShopButton;
+
+    [SerializeField]
+    private ShopUI shopUI;
 
     [Header("DOTween")]
-    [SerializeField] private float openDuration = 0.28f;
-    [SerializeField] private float numberDuration = 0.45f;
-    [SerializeField] private float rowDelay = 0.12f;
+    [SerializeField]
+    private float openDuration = 0.28f;
+
+    [SerializeField]
+    private float numberDuration = 0.45f;
+
+    [SerializeField]
+    private float rowDelay = 0.12f;
+
+    [Header("정산 코인 사운드")]
+    [SerializeField]
+    private float moneySoundInterval = 0.06f;
+
+    [SerializeField]
+    [Range(0f, 1f)]
+    private float moneySoundVolume = 0.9f;
 
     private GameManager gameManager;
     private Sequence settlementSequence;
@@ -34,7 +66,9 @@ public class DaySettlementUI : MonoBehaviour
     {
         if(openShopButton != null)
         {
-            openShopButton.onClick.AddListener(OpenShop);
+            openShopButton.onClick.AddListener(
+                OpenShop
+            );
         }
 
         HideImmediate();
@@ -42,35 +76,45 @@ public class DaySettlementUI : MonoBehaviour
 
     private void Start()
     {
-        gameManager = GameManager.Instance;
+        gameManager =
+            GameManager.Instance;
 
         if(gameManager == null)
         {
-            Debug.LogError("DaySettlementUI에서 GameManager를 찾지 못했습니다.");
+            Debug.LogError(
+                "DaySettlementUI에서 GameManager를 찾지 못했습니다."
+            );
+
             return;
         }
 
-        gameManager.OnGameStateChanged += HandleGameStateChanged;
+        gameManager.OnGameStateChanged +=
+            HandleGameStateChanged;
     }
 
     private void OnDestroy()
     {
         if(gameManager != null)
         {
-            gameManager.OnGameStateChanged -= HandleGameStateChanged;
+            gameManager.OnGameStateChanged -=
+                HandleGameStateChanged;
         }
 
         if(openShopButton != null)
         {
-            openShopButton.onClick.RemoveListener(OpenShop);
+            openShopButton.onClick.RemoveListener(
+                OpenShop
+            );
         }
 
         settlementSequence?.Kill();
     }
 
-    private void HandleGameStateChanged(GameManager.GameState state)
+    private void HandleGameStateChanged(
+        GameManager.GameState state)
     {
-        if(state == GameManager.GameState.Result)
+        if(state ==
+           GameManager.GameState.Result)
         {
             Show();
         }
@@ -78,11 +122,15 @@ public class DaySettlementUI : MonoBehaviour
 
     public void Show()
     {
-        GameProgressManager progress = GameProgressManager.Instance;
+        GameProgressManager progress =
+            GameProgressManager.Instance;
 
         if(progress == null)
         {
-            Debug.LogError("GameProgressManager가 없습니다.");
+            Debug.LogError(
+                "GameProgressManager가 없습니다."
+            );
+
             return;
         }
 
@@ -92,19 +140,48 @@ public class DaySettlementUI : MonoBehaviour
 
         if(openShopButton != null)
         {
-            openShopButton.interactable = false;
+            openShopButton.interactable =
+                false;
         }
 
-        dayText.text = $"DAY {progress.CurrentDay} 정산";
+        dayText.text =
+            $"DAY {progress.CurrentDay} 정산";
 
-        SetMoneyText(grossEarningsText, 0, false);
-        SetMoneyText(expiredPenaltyText, 0, true);
-        SetMoneyText(wrongPenaltyText, 0, true);
-        SetMoneyText(finalEarningsText, 0, false);
-        SetMoneyText(totalMoneyText, 0, false);
+        SetMoneyText(
+            grossEarningsText,
+            0,
+            false
+        );
 
-        settlementCanvasGroup.alpha = 0f;
-        settlementWindow.localScale = Vector3.one * 0.9f;
+        SetMoneyText(
+            expiredPenaltyText,
+            0,
+            true
+        );
+
+        SetMoneyText(
+            wrongPenaltyText,
+            0,
+            true
+        );
+
+        SetMoneyText(
+            finalEarningsText,
+            0,
+            false
+        );
+
+        SetMoneyText(
+            totalMoneyText,
+            0,
+            false
+        );
+
+        settlementCanvasGroup.alpha =
+            0f;
+
+        settlementWindow.localScale =
+            Vector3.one * 0.9f;
 
         settlementSequence =
             DOTween.Sequence()
@@ -112,78 +189,116 @@ public class DaySettlementUI : MonoBehaviour
 
         settlementSequence.Append(
             settlementCanvasGroup
-                .DOFade(1f, openDuration)
-                .SetEase(Ease.OutQuad)
+                .DOFade(
+                    1f,
+                    openDuration
+                )
+                .SetEase(
+                    Ease.OutQuad
+                )
         );
 
         settlementSequence.Join(
             settlementWindow
-                .DOScale(1f, openDuration)
-                .SetEase(Ease.OutBack)
+                .DOScale(
+                    1f,
+                    openDuration
+                )
+                .SetEase(
+                    Ease.OutBack
+                )
         );
 
-        settlementSequence.AppendInterval(rowDelay);
+        settlementSequence.AppendInterval(
+            rowDelay
+        );
 
+        // 총 매출: 코인 소리 재생
         AppendCountAnimation(
             settlementSequence,
             grossEarningsText,
             progress.LastGrossEarnings,
-            false
+            false,
+            true
         );
 
-        settlementSequence.AppendInterval(rowDelay);
+        settlementSequence.AppendInterval(
+            rowDelay
+        );
 
+        // 시간 초과 감점: 소리 없음
         AppendCountAnimation(
             settlementSequence,
             expiredPenaltyText,
             progress.LastExpiredPenalty,
-            true
+            true,
+            false
         );
 
-        settlementSequence.AppendInterval(rowDelay);
+        settlementSequence.AppendInterval(
+            rowDelay
+        );
 
+        // 오제출 감점: 소리 없음
         AppendCountAnimation(
             settlementSequence,
             wrongPenaltyText,
             progress.LastWrongSubmitPenalty,
-            true
+            true,
+            false
         );
 
-        settlementSequence.AppendInterval(rowDelay);
+        settlementSequence.AppendInterval(
+            rowDelay
+        );
 
+        // 최종 수익: 코인 소리 재생
         AppendCountAnimation(
             settlementSequence,
             finalEarningsText,
             progress.LastNetEarnings,
-            false
+            false,
+            true
         );
 
-        settlementSequence.AppendCallback(() =>
-        {
-            finalEarningsText.rectTransform
-                .DOPunchScale(
-                    Vector3.one * 0.15f,
-                    0.25f,
-                    6,
-                    0.6f
-                )
-                .SetUpdate(true);
-        });
+        settlementSequence.AppendCallback(
+            () =>
+            {
+                if(finalEarningsText == null)
+                    return;
 
-        settlementSequence.AppendInterval(rowDelay);
+                finalEarningsText.rectTransform
+                    .DOPunchScale(
+                        Vector3.one * 0.15f,
+                        0.25f,
+                        6,
+                        0.6f
+                    )
+                    .SetUpdate(true);
+            }
+        );
 
+        settlementSequence.AppendInterval(
+            rowDelay
+        );
+
+        // 총 보유 금액: 코인 소리 재생
         AppendCountAnimation(
             settlementSequence,
             totalMoneyText,
             progress.TotalMoney,
-            false
+            false,
+            true
         );
 
-        settlementSequence.OnComplete(() =>
-        {
-            if(openShopButton != null)
+        settlementSequence.OnComplete(
+            () =>
             {
-                openShopButton.interactable = true;
+                if(openShopButton == null)
+                    return;
+
+                openShopButton.interactable =
+                    true;
 
                 openShopButton.transform
                     .DOPunchScale(
@@ -194,37 +309,98 @@ public class DaySettlementUI : MonoBehaviour
                     )
                     .SetUpdate(true);
             }
-        });
+        );
     }
 
     private void AppendCountAnimation(
         Sequence sequence,
         TMP_Text targetText,
         int targetValue,
-        bool isPenalty)
+        bool isPenalty,
+        bool playMoneySound)
     {
         if(targetText == null)
             return;
 
-        int displayed = 0;
+        int displayedValue = 0;
+        int previousValue = -1;
 
-        sequence.Append(
+        float nextSoundTime =
+            0f;
+
+        targetValue =
+            Mathf.Max(
+                0,
+                targetValue
+            );
+
+        Tween countTween =
             DOTween.To(
-                    () => displayed,
+                    () => displayedValue,
                     value =>
                     {
-                        displayed = value;
+                        displayedValue =
+                            value;
+
                         SetMoneyText(
                             targetText,
-                            displayed,
+                            displayedValue,
                             isPenalty
                         );
+
+                        if(!playMoneySound)
+                            return;
+
+                        if(displayedValue <= 0)
+                            return;
+
+                        // 같은 숫자가 여러 프레임 반복될 때
+                        // 중복 재생 방지
+                        if(displayedValue ==
+                           previousValue)
+                        {
+                            return;
+                        }
+
+                        previousValue =
+                            displayedValue;
+
+                        // 사운드가 너무 빠르게 재생되지 않도록 제한
+                        if(Time.unscaledTime <
+                           nextSoundTime)
+                        {
+                            return;
+                        }
+
+                        SoundManager.Instance
+                            ?.PlayMoneyTick(
+                                moneySoundVolume
+                            );
+
+                        nextSoundTime =
+                            Time.unscaledTime +
+                            moneySoundInterval;
                     },
                     targetValue,
                     numberDuration
                 )
-                .SetEase(Ease.OutCubic)
+                .SetEase(
+                    Ease.OutCubic
+                )
                 .SetUpdate(true)
+                .OnComplete(
+                    () =>
+                    {
+                        SetMoneyText(
+                            targetText,
+                            targetValue,
+                            isPenalty
+                        );
+                    }
+                );
+
+        sequence.Append(
+            countTween
         );
     }
 
@@ -246,13 +422,17 @@ public class DaySettlementUI : MonoBehaviour
     {
         if(shopUI == null)
         {
-            Debug.LogError("ShopUI가 연결되지 않았습니다.");
+            Debug.LogError(
+                "ShopUI가 연결되지 않았습니다."
+            );
+
             return;
         }
 
         if(openShopButton != null)
         {
-            openShopButton.interactable = false;
+            openShopButton.interactable =
+                false;
         }
 
         Sequence sequence =
@@ -261,38 +441,57 @@ public class DaySettlementUI : MonoBehaviour
 
         sequence.Append(
             settlementCanvasGroup
-                .DOFade(0f, 0.18f)
-                .SetEase(Ease.InQuad)
+                .DOFade(
+                    0f,
+                    0.18f
+                )
+                .SetEase(
+                    Ease.InQuad
+                )
         );
 
         sequence.Join(
             settlementWindow
-                .DOScale(0.94f, 0.18f)
-                .SetEase(Ease.InCubic)
+                .DOScale(
+                    0.94f,
+                    0.18f
+                )
+                .SetEase(
+                    Ease.InCubic
+                )
         );
 
-        sequence.OnComplete(() =>
-        {
-            settlementRoot.SetActive(false);
-            shopUI.Open();
-        });
+        sequence.OnComplete(
+            () =>
+            {
+                settlementRoot.SetActive(
+                    false
+                );
+
+                shopUI.Open();
+            }
+        );
     }
 
     private void HideImmediate()
     {
         if(settlementCanvasGroup != null)
         {
-            settlementCanvasGroup.alpha = 0f;
+            settlementCanvasGroup.alpha =
+                0f;
         }
 
         if(settlementWindow != null)
         {
-            settlementWindow.localScale = Vector3.one;
+            settlementWindow.localScale =
+                Vector3.one;
         }
 
         if(settlementRoot != null)
         {
-            settlementRoot.SetActive(false);
+            settlementRoot.SetActive(
+                false
+            );
         }
     }
 }

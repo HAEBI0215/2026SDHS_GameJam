@@ -18,3 +18,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9cfa9b140651f1948843ddea083f0eed, type: 2}
   cookingTime: 10
   resultItem: {fileID: 11400000, guid: 98d81d3f9fa8cc94389069e4d09892dd, type: 2}
+  seasoningTimings:
+  - 0.25
+  - 0.55
+  - 0.85
+  seasoningSuccessRangeSeconds: 0.6

@@ -98,8 +98,15 @@ public class GameManager : MonoBehaviour
         Time =
             GetComponent<TimeManager>();
 
-        Sound =
-            GetComponent<SoundManager>();
+        Sound = SoundManager.Instance;
+
+        if(Sound == null)
+        {
+            Sound =
+                FindFirstObjectByType<
+                    SoundManager
+                >();
+        }
 
         UI =
             GetComponent<UIManager>();

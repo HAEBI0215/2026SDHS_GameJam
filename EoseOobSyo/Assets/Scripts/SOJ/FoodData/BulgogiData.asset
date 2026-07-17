@@ -16,5 +16,10 @@ MonoBehaviour:
   ingredients:
   - {fileID: 11400000, guid: 6a7306747450f7d418623455220112ec, type: 2}
   - {fileID: 11400000, guid: ce98afe8379e604469ab066641b2cef8, type: 2}
-  cookingTime: 15
+  cookingTime: 10
   resultItem: {fileID: 11400000, guid: 0e0c95f8373c6c74991e5ef8d3274ad8, type: 2}
+  seasoningTimings:
+  - 0.25
+  - 0.55
+  - 0.85
+  seasoningSuccessRangeSeconds: 0.6

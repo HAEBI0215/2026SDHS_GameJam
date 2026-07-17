@@ -10,7 +10,10 @@ public class ServingStation :
         if(inventory == null)
             return;
 
-        if(GameManager.Instance == null)
+        GameManager gameManager =
+            GameManager.Instance;
+
+        if(gameManager == null)
         {
             Debug.LogError(
                 "GameManager가 없습니다."
@@ -19,7 +22,7 @@ public class ServingStation :
             return;
         }
 
-        if(!GameManager.Instance.IsPlaying())
+        if(!gameManager.IsPlaying())
         {
             Debug.Log(
                 "현재 장사 중이 아닙니다."
@@ -40,46 +43,25 @@ public class ServingStation :
         ItemBase heldItem =
             inventory.GetItem();
 
-        PlateItem plate =
-            heldItem as PlateItem;
-
-        if(plate == null)
-        {
-            Debug.Log(
-                "음식이 담긴 접시만 제출할 수 있습니다."
-            );
-
-            return;
-        }
-
-        if(!plate.HasFood())
-        {
-            Debug.Log(
-                "빈 접시는 제출할 수 없습니다."
-            );
-
-            return;
-        }
-
         FoodItem food =
-            plate.GetFood();
+            heldItem as FoodItem;
 
         if(food == null)
         {
-            Debug.LogWarning(
-                "접시에 음식 정보가 없습니다."
+            Debug.Log(
+                "조리된 음식만 제출할 수 있습니다."
             );
 
             return;
         }
 
-        SubmitPlate(
+        SubmitFood(
             inventory,
             food
         );
     }
 
-    private void SubmitPlate(
+    private void SubmitFood(
         PlayerInventory inventory,
         FoodItem food)
     {
@@ -106,9 +88,11 @@ public class ServingStation :
                 $"{food.ItemName}과 일치하는 주문이 없습니다."
             );
 
-            GameManager.Instance.Score?.RegisterWrongSubmit();
+            GameManager.Instance.Score
+                ?.RegisterWrongSubmit();
 
-            // 실패한 접시는 삭제하지 않음
+            // 잘못 제출한 음식은 손에 남김
+            // 이후 쓰레기통에 버릴 수 있음
             return;
         }
 
@@ -116,13 +100,13 @@ public class ServingStation :
             $"{food.ItemName} 주문 제출 성공"
         );
 
-        ItemBase submittedItem =
+        ItemBase submittedFood =
             inventory.TakeItem();
 
-        if(submittedItem != null)
+        if(submittedFood != null)
         {
             Destroy(
-                submittedItem.gameObject
+                submittedFood.gameObject
             );
         }
     }

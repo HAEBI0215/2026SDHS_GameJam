@@ -143,4 +143,16 @@ public class GameProgressManager : MonoBehaviour
 
         return purchasedItemIds.Contains(itemId);
     }
+
+    public void AddMoney(int amount)
+    {
+        totalMoney = Mathf.Max(0, totalMoney + amount);
+
+        OnTotalMoneyChanged?.Invoke(totalMoney);
+
+        Debug.Log(
+            $"[CHEAT] 돈 {amount:+#,##0;-#,##0;0} / " +
+            $"현재 보유 돈: {totalMoney:N0}"
+        );
+    }
 }

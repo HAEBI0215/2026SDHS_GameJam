@@ -2,63 +2,73 @@ using UnityEngine;
 
 public class FoodItem : ItemBase
 {
-    private bool isOnPlate;
+    [Header("음식 품질")]
+    [SerializeField]
+    private FoodQuality quality =
+        FoodQuality.Good;
 
-    public bool IsOnPlate => isOnPlate;
+    [SerializeField]
+    private int seasoningSuccessCount;
 
-    public override void Interact(PlayerInventory inventory)
+    [SerializeField]
+    private int seasoningTotalCount;
+
+    public FoodQuality Quality =>
+        quality;
+
+    public int SeasoningSuccessCount =>
+        seasoningSuccessCount;
+
+    public int SeasoningTotalCount =>
+        seasoningTotalCount;
+
+    public override void Interact(
+        PlayerInventory inventory)
     {
         if(inventory == null)
             return;
 
-        if(isOnPlate)
-            return;
-
-        if(!inventory.HasItem())
+        if(inventory.HasItem())
         {
-            Debug.Log("음식이 뜨거워서 맨손으로 집을 수 없습니다.");
+            Debug.Log(
+                "이미 다른 아이템을 들고 있습니다."
+            );
+
             return;
         }
 
-        ItemBase heldItem = inventory.GetItem();
+        inventory.PickUp(this);
 
-        if(heldItem is not PlateItem plate)
-        {
-            Debug.Log("완성 음식을 담으려면 접시가 필요합니다.");
-            return;
-        }
-
-        if(plate.HasFood())
-        {
-            Debug.Log("접시에 이미 음식이 있습니다.");
-            return;
-        }
-
-        plate.TrySetFood(this);
+        Debug.Log(
+            $"{ItemName}을(를) 집었습니다."
+        );
     }
 
-    public void PutOnPlate(Transform foodPoint)
+    public void SetQuality(
+        FoodQuality newQuality,
+        int successCount,
+        int totalCount)
     {
-        isOnPlate = true;
+        quality =
+            newQuality;
 
-        transform.SetParent(foodPoint);
-        transform.localPosition = Vector3.zero;
-        transform.localRotation = Quaternion.identity;
+        seasoningSuccessCount =
+            Mathf.Max(
+                0,
+                successCount
+            );
 
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        seasoningTotalCount =
+            Mathf.Max(
+                0,
+                totalCount
+            );
 
-        if(rb != null)
-        {
-            rb.velocity = Vector2.zero;
-            rb.angularVelocity = 0f;
-            rb.simulated = false;
-        }
-
-        Collider2D[] colliders = GetComponents<Collider2D>();
-
-        foreach(Collider2D col in colliders)
-        {
-            col.enabled = false;
-        }
+        Debug.Log(
+            $"{ItemName} 품질 설정: " +
+            $"{quality} / " +
+            $"{seasoningSuccessCount}/" +
+            $"{seasoningTotalCount}"
+        );
     }
 }

@@ -9,6 +9,7 @@ public class TimeManager : MonoBehaviour
 
     private float remainingTime;
     private bool isRunning;
+    private bool isTimerPaused;
 
     public float RemainingTime =>
         remainingTime;
@@ -18,6 +19,9 @@ public class TimeManager : MonoBehaviour
 
     public bool IsRunning =>
         isRunning;
+
+    public bool IsTimerPaused =>
+        isTimerPaused;
 
     public float RemainingRatio
     {
@@ -40,6 +44,11 @@ public class TimeManager : MonoBehaviour
         if(!isRunning)
             return;
 
+        // 영업 제한시간만 정지
+        // 플레이어, 조리, 주문 등은 계속 진행됨
+        if(isTimerPaused)
+            return;
+
         remainingTime -=
             UnityEngine.Time.deltaTime;
 
@@ -57,6 +66,7 @@ public class TimeManager : MonoBehaviour
             return;
 
         isRunning = false;
+        isTimerPaused = false;
 
         OnTimeEnded?.Invoke();
 
@@ -74,6 +84,8 @@ public class TimeManager : MonoBehaviour
         isRunning =
             remainingTime > 0f;
 
+        isTimerPaused = false;
+
         OnTimeChanged?.Invoke(
             remainingTime
         );
@@ -86,6 +98,9 @@ public class TimeManager : MonoBehaviour
     public void StopTimer()
     {
         isRunning = false;
+        isTimerPaused = false;
+
+        Debug.Log("영업 타이머 정지");
     }
 
     public void ResumeTimer()
@@ -94,5 +109,32 @@ public class TimeManager : MonoBehaviour
             return;
 
         isRunning = true;
+        isTimerPaused = false;
+
+        Debug.Log("영업 타이머 재개");
+    }
+
+    public void SetTimerPaused(bool paused)
+    {
+        if(!isRunning)
+        {
+            isTimerPaused = false;
+            return;
+        }
+
+        isTimerPaused = paused;
+
+        Debug.Log(
+            isTimerPaused
+                ? "[TIME] 영업시간 일시정지"
+                : "[TIME] 영업시간 재개"
+        );
+    }
+
+    public void ToggleTimerPause()
+    {
+        SetTimerPaused(
+            !isTimerPaused
+        );
     }
 }
