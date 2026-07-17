@@ -2,19 +2,47 @@ using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
+    public enum PlayerType
+    {
+        Player1,
+        Player2
+    }
+
+    [Header("플레이어 설정")]
+    [SerializeField]
+    private PlayerType playerType;
+
     [SerializeField]
     private float interactRange = 1f;
 
     private PlayerInventory inventory;
 
+    private KeyCode interactKey;
+
     private void Awake()
     {
         inventory = GetComponent<PlayerInventory>();
+
+        SetInteractKey();
+    }
+
+    private void SetInteractKey()
+    {
+        switch(playerType)
+        {
+            case PlayerType.Player1:
+                interactKey = KeyCode.E;
+                break;
+
+            case PlayerType.Player2:
+                interactKey = KeyCode.Slash;
+                break;
+        }
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.E))
+        if(Input.GetKeyDown(interactKey))
         {
             Interact();
         }
@@ -22,7 +50,10 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Interact()
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, interactRange);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(
+            transform.position,
+            interactRange
+        );
 
         foreach(Collider2D hit in hits)
         {
@@ -48,8 +79,12 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
+
     private void OnDrawGizmosSelected()
     {
-        Gizmos.DrawWireSphere(transform.position, interactRange);
+        Gizmos.DrawWireSphere(
+            transform.position,
+            interactRange
+        );
     }
 }

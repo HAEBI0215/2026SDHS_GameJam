@@ -1,13 +1,11 @@
 using UnityEngine;
 
-
 public class TimeManager : MonoBehaviour
 {
-
     private float currentTime;
 
     [SerializeField]
-    private float shopTime = 180f;
+    private float shopTime = 240f;
 
     public float CurrentTime
     {
