@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Dispenser : MonoBehaviour, IInteractable
 {
-    [Header("생성할 아이템")]
+    [Header("생성할 재료")]
     [SerializeField]
     private ItemData itemData;
 
@@ -14,22 +14,50 @@ public class Dispenser : MonoBehaviour, IInteractable
     {
         if(inventory.HasItem())
         {
-            Debug.Log("손에 아이템이 있습니다");
+            Debug.Log("이미 아이템을 들고 있습니다.");
             return;
         }
-        SpawnItem();
+
+        SpawnItem(inventory);
     }
 
-    private void SpawnItem()
+    private void SpawnItem(PlayerInventory inventory)
     {
-        Instantiate(
+        if(itemData == null)
+        {
+            Debug.LogError($"{name}: ItemData가 설정되지 않았습니다.");
+            return;
+        }
+
+        if(itemData.prefab == null)
+        {
+            Debug.LogError($"{name}: {itemData.itemName}의 Prefab이 없습니다.");
+            return;
+        }
+
+        if(outputPoint == null)
+        {
+            Debug.LogError($"{name}: OutputPoint가 설정되지 않았습니다.");
+            return;
+        }
+
+        GameObject obj = Instantiate(
             itemData.prefab,
             outputPoint.position,
             Quaternion.identity
         );
 
-        Debug.Log(
-            itemData.itemName + " 생성"
-        );
+        ItemBase item = obj.GetComponent<ItemBase>();
+
+        if(item == null)
+        {
+            Debug.LogError($"{obj.name}에 ItemBase 컴포넌트가 없습니다.");
+            Destroy(obj);
+            return;
+        }
+
+        inventory.PickUp(item);
+
+        Debug.Log($"{itemData.itemName} 지급");
     }
 }

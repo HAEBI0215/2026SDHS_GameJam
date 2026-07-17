@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4896642561935624894}
   - component: {fileID: 7862511324900745629}
   - component: {fileID: -7554437841237241507}
-  - component: {fileID: 1459953813962572964}
+  - component: {fileID: 2512368373336332782}
   m_Layer: 0
   m_Name: BibimBap
   m_TagString: Untagged
@@ -121,7 +121,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &1459953813962572964
+--- !u!114 &2512368373336332782
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -130,8 +130,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1783618291382083236}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0bc6d4b5c7cdba40bd02193d914b210, type: 3}
+  m_Script: {fileID: 11500000, guid: 0d66e53a814c1d544abe40cf53ddf455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: 107416eff92c66a458fbb7d414ddc73d, type: 2}
-  type: 0
